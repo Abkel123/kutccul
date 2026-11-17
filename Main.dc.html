@@ -1,0 +1,585 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>KUCCCUL Website Prototype</title>
+<script src="./vendor/react.js"></script>
+<script src="./vendor/react-dom.js"></script>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Source+Serif+4:wght@600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'Inter',system-ui,sans-serif;color:#1F2933;background:#F7F5F0}
+h1,h2,h3{font-family:'Source Serif 4',Georgia,serif;color:#17365D;margin:0;font-weight:700}
+p{margin:0}
+button,input,select,textarea{font-family:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid #C05A2B;outline-offset:2px}
+a{color:#17365D}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 22px;border-radius:8px;border:2px solid #C05A2B;background:#C05A2B;color:#fff;font-weight:600;font-size:15px;text-decoration:none}
+.btn:hover{background:#A84B22;border-color:#A84B22}
+.btn:disabled{background:#B8BEC6;border-color:#B8BEC6;cursor:not-allowed}
+.btn2{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 22px;border-radius:8px;border:2px solid #17365D;background:#fff;color:#17365D;font-weight:600;font-size:15px;text-decoration:none}
+.btn2:hover{background:#E8EEF6}
+.nav{min-height:44px;padding:0 14px;border:0;border-bottom:3px solid transparent;background:transparent;font-size:15px;font-weight:500;color:#1F2933}
+.nav:hover{color:#C05A2B}
+.card{background:#fff;border:1px solid #DDE3EA;border-radius:12px;padding:24px}
+.lbl{display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px}
+.inp{width:100%;box-sizing:border-box;min-height:44px;padding:0 12px;border:1px solid #9AA5B1;border-radius:8px;font-size:15px;background:#fff;color:#1F2933}
+.chip{display:inline-block;padding:6px 12px;border-radius:999px;background:#E8EEF6;color:#17365D;font-size:13px;font-weight:500}
+.ph{color:#6B4A3A;background:#FBEFE6;border-radius:4px;padding:0 4px}
+</style>
+</helmet>
+
+<div style="min-height:100%;background:#F7F5F0">
+
+<!-- Presenter bar -->
+<div style="background:#0F2440;color:#fff;padding:12px 24px">
+  <div style="max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center">
+    <span style="font-size:12px;font-weight:700;letter-spacing:.08em;color:#F2B79A">PROTOTYPE</span>
+    <span style="font-size:14px;color:#D5DEE9">Package shown:</span>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <sc-for list="{{pkgBtns}}" as="b" hint-placeholder-count="3">
+        <button style="{{b.style}}" onClick="{{b.pick}}">{{b.label}}</button>
+      </sc-for>
+    </div>
+    <span style="font-size:14px;font-weight:600;color:#fff">{{pkgPrice}}</span>
+    <span style="flex:1 1 320px;font-size:13px;color:#D5DEE9">{{pkgBlurb}}</span>
+  </div>
+</div>
+
+<!-- ADMIN DASHBOARD -->
+<sc-if value="{{p_admin}}" hint-placeholder-val="{{false}}">
+<div style="background:#17365D;color:#fff;padding:14px 24px">
+  <div style="max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px">
+    <span style="font-weight:700;font-size:17px">KUCCCUL Admin</span>
+    <span style="font-size:13px;color:#D5DEE9">Signed in as: Communications Officer</span>
+    <span style="flex:1"></span>
+    <button class="btn2" onClick="{{backToSite}}">Back to website</button>
+  </div>
+</div>
+<div style="max-width:1180px;margin:0 auto;padding:32px 24px 56px;display:flex;flex-direction:column;gap:24px">
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px">
+    <div class="card"><div style="font-size:13px;color:#4B5563;font-weight:600">New enquiries</div><div style="font-family:'Source Serif 4',serif;font-size:40px;font-weight:700;color:#17365D">{{newCount}}</div></div>
+    <div class="card"><div style="font-size:13px;color:#4B5563;font-weight:600">All enquiries</div><div style="font-family:'Source Serif 4',serif;font-size:40px;font-weight:700;color:#17365D">{{enqCount}}</div></div>
+    <div class="card"><div style="font-size:13px;color:#4B5563;font-weight:600">Published news items</div><div style="font-family:'Source Serif 4',serif;font-size:40px;font-weight:700;color:#17365D">{{newsCount}}</div></div>
+    <div class="card"><div style="font-size:13px;color:#4B5563;font-weight:600">Documents online</div><div style="font-family:'Source Serif 4',serif;font-size:40px;font-weight:700;color:#17365D">3</div></div>
+  </div>
+
+  <div class="card">
+    <h2 style="font-size:22px;margin-bottom:6px">Enquiries</h2>
+    <p style="font-size:14px;color:#4B5563;margin-bottom:16px">Submit a form on the public site and it appears here. Rows marked Sample are placeholders.</p>
+    <div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:14px;min-width:620px">
+        <thead><tr style="text-align:left;color:#374151;border-bottom:2px solid #DDE3EA"><th style="padding:10px 8px">Type</th><th style="padding:10px 8px">Name</th><th style="padding:10px 8px">Phone</th><th style="padding:10px 8px">Branch</th><th style="padding:10px 8px">Status</th><th style="padding:10px 8px"></th></tr></thead>
+        <tbody>
+          <sc-for list="{{enquiries}}" as="e" hint-placeholder-count="2">
+          <tr style="border-bottom:1px solid #E5E9EF">
+            <td style="padding:12px 8px;font-weight:600;color:#17365D">{{e.type}}</td>
+            <td style="padding:12px 8px">{{e.name}}</td>
+            <td style="padding:12px 8px">{{e.phone}}</td>
+            <td style="padding:12px 8px">{{e.branch}}</td>
+            <td style="padding:12px 8px"><span style="{{e.badge}}">{{e.status}}</span></td>
+            <td style="padding:8px"><button class="btn2" style="min-height:36px;padding:0 14px;font-size:13px" onClick="{{e.toggle}}">{{e.action}}</button></td>
+          </tr>
+          </sc-for>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:24px">
+    <div class="card">
+      <h2 style="font-size:22px;margin-bottom:16px">Publish news</h2>
+      <label class="lbl" for="nt">Title</label>
+      <input id="nt" class="inp" value="{{newsTitle}}" onChange="{{setNewsTitle}}" placeholder="e.g. AGM notice">
+      <label class="lbl" for="nb" style="margin-top:14px">Text</label>
+      <textarea id="nb" class="inp" style="min-height:96px;padding:10px 12px" value="{{newsBody}}" onChange="{{setNewsBody}}"></textarea>
+      <div style="margin-top:16px"><button class="btn" disabled="{{newsInvalid}}" onClick="{{publishNews}}">Publish to website</button></div>
+      <sc-if value="{{newsDone}}" hint-placeholder-val="{{false}}"><p style="margin-top:12px;font-size:14px;color:#1B5E3A;font-weight:600">Published. Open the News page on the website to see it.</p></sc-if>
+    </div>
+    <div class="card">
+      <h2 style="font-size:22px;margin-bottom:6px">Staff roles</h2>
+      <p style="font-size:14px;color:#4B5563;margin-bottom:14px">Each role only sees what it needs.</p>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #E5E9EF;padding-bottom:10px"><b>Super Administrator</b><span style="font-size:14px;color:#4B5563">Everything, incl. users</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #E5E9EF;padding-bottom:10px"><b>Management Administrator</b><span style="font-size:14px;color:#4B5563">Content, enquiries, documents</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #E5E9EF;padding-bottom:10px"><b>Communications Officer</b><span style="font-size:14px;color:#4B5563">News and announcements</span></div>
+        <div style="display:flex;justify-content:space-between;gap:12px"><b>Branch Administrator</b><span style="font-size:14px;color:#4B5563">Own branch details and enquiries</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<!-- PUBLIC WEBSITE -->
+<sc-if value="{{showSite}}" hint-placeholder-val="{{true}}">
+
+<div style="background:#fff;border-bottom:1px solid #DDE3EA;padding:8px 24px">
+  <div style="max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:8px 24px;align-items:center;font-size:14px">
+    <a href="#top" style="color:#17365D;font-weight:600;text-decoration:none">Call +237 233 35 49 19</a>
+    <a href="#top" style="color:#17365D;font-weight:600;text-decoration:none">WhatsApp us</a>
+    <span style="flex:1"></span>
+    <sc-if value="{{isFull}}" hint-placeholder-val="{{true}}">
+      <div style="display:flex;gap:4px;align-items:center"><button style="{{enStyle}}" onClick="{{setEn}}">EN</button><button style="{{frStyle}}" onClick="{{setFr}}">FR</button></div>
+    </sc-if>
+  </div>
+</div>
+
+<header id="top" style="background:#fff;border-bottom:1px solid #DDE3EA">
+  <div style="max-width:1180px;margin:0 auto;padding:12px 24px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px">
+    <div style="display:flex;align-items:center;gap:12px">
+      <div style="width:48px;height:48px;border-radius:10px;background:#17365D;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Source Serif 4',serif;font-weight:700;font-size:22px" aria-label="Logo placeholder">K</div>
+      <div><div style="font-family:'Source Serif 4',serif;font-weight:700;font-size:20px;color:#17365D;line-height:1.1">KUCCCUL</div><div style="font-size:12px;color:#4B5563">Kumba Central Cooperative Credit Union</div></div>
+    </div>
+    <nav style="display:flex;flex-wrap:wrap;gap:0 4px;flex:1 1 400px;justify-content:flex-end" aria-label="Main">
+      <sc-for list="{{nav}}" as="n" hint-placeholder-count="5">
+        <button class="nav" style="{{n.style}}" onClick="{{n.go}}">{{n.label}}</button>
+      </sc-for>
+      <sc-if value="{{isStd}}" hint-placeholder-val="{{true}}"><button class="btn2" style="min-height:40px;margin-left:8px;padding:0 14px;font-size:14px" onClick="{{openAdmin}}">Staff login</button></sc-if>
+    </nav>
+  </div>
+</header>
+
+<main style="max-width:1180px;margin:0 auto;padding:40px 24px 56px">
+
+<!-- HOME -->
+<sc-if value="{{p_home}}" hint-placeholder-val="{{true}}">
+<section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:32px;align-items:stretch">
+  <div style="display:flex;flex-direction:column;justify-content:center;gap:20px;padding:16px 0">
+    <h1 style="font-size:46px;line-height:1.1">{{tx.heroTitle}}</h1>
+    <p style="font-size:18px;line-height:1.55;color:#374151;max-width:520px">{{tx.heroSub}}</p>
+    <div style="display:flex;flex-wrap:wrap;gap:12px">
+      <sc-if value="{{isStd}}" hint-placeholder-val="{{true}}"><button class="btn" onClick="{{goMembership}}">{{tx.ctaMember}}</button></sc-if>
+      <a class="{{ctaCallClass}}" href="#top">{{tx.ctaCall}}</a>
+      <a class="btn2" href="#top">WhatsApp</a>
+    </div>
+  </div>
+  <div style="background:#17365D;border-radius:16px;padding:32px;color:#fff;display:flex;flex-direction:column;gap:18px">
+    <div style="font-size:12px;font-weight:700;letter-spacing:.08em;color:#F2B79A">{{tx.since}}</div>
+    <div style="font-family:'Source Serif 4',serif;font-size:28px;font-weight:700;line-height:1.25">{{tx.heroCard}}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px">
+      <sc-for list="{{places}}" as="pl" hint-placeholder-count="6"><span style="padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.14);font-size:13px">{{pl.place}}</span></sc-for>
+    </div>
+  </div>
+</section>
+
+<h2 style="font-size:30px;margin:56px 0 20px">{{tx.secServices}}</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+  <sc-for list="{{categories}}" as="c" hint-placeholder-count="3">
+    <div class="card">
+      <h3 style="font-size:21px;margin-bottom:12px">{{c.title}}</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:8px"><sc-for list="{{c.items}}" as="it" hint-placeholder-count="4"><span class="chip">{{it}}</span></sc-for></div>
+    </div>
+  </sc-for>
+</div>
+
+<sc-if value="{{isStd}}" hint-placeholder-val="{{true}}">
+<h2 style="font-size:30px;margin:56px 0 20px">{{tx.secNews}}</h2>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px">
+  <sc-for list="{{newsTop}}" as="nw" hint-placeholder-count="2">
+    <div class="card"><div style="font-size:13px;color:#4B5563;margin-bottom:6px">{{nw.date}}</div><h3 style="font-size:20px;margin-bottom:8px">{{nw.title}}</h3><p style="font-size:15px;line-height:1.5;color:#374151">{{nw.body}}</p></div>
+  </sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{isFull}}" hint-placeholder-val="{{true}}">
+<div class="card" style="margin-top:48px;display:flex;flex-wrap:wrap;gap:16px 32px;align-items:center;background:#E8EEF6;border-color:#C9D6E6">
+  <div style="flex:1 1 280px"><h3 style="font-size:22px;margin-bottom:4px">{{tx.newsletter}}</h3><p style="font-size:14px;color:#374151">{{tx.newsletterSub}}</p></div>
+  <div style="display:flex;gap:10px;flex:1 1 320px;flex-wrap:wrap">
+    <div style="flex:1 1 200px"><label class="lbl" for="nl">Email</label><input id="nl" class="inp" placeholder="name@example.com"></div>
+    <div style="align-self:flex-end"><button class="btn" onClick="{{subscribe}}">{{tx.subscribe}}</button></div>
+  </div>
+  <sc-if value="{{subscribed}}" hint-placeholder-val="{{false}}"><p style="flex-basis:100%;font-size:14px;color:#1B5E3A;font-weight:600">Subscribed (prototype). Thank you.</p></sc-if>
+</div>
+</sc-if>
+</sc-if>
+
+<!-- ABOUT -->
+<sc-if value="{{p_about}}" hint-placeholder-val="{{false}}">
+<h1 style="font-size:40px;margin-bottom:12px">About KUCCCUL</h1>
+<p style="font-size:17px;line-height:1.6;color:#374151;max-width:760px;margin-bottom:28px">Kumba Central Cooperative Credit Union Limited is a savings and loans cooperative established on 9 October 1996 with 15 members. It has since grown with offices serving different communities.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px">
+  <div class="card"><h3 style="font-size:20px;margin-bottom:8px">Mission</h3><p style="font-size:15px;color:#374151"><span class="ph">[Mission statement supplied by KUCCCUL]</span></p></div>
+  <div class="card"><h3 style="font-size:20px;margin-bottom:8px">Vision</h3><p style="font-size:15px;color:#374151"><span class="ph">[Vision statement supplied by KUCCCUL]</span></p></div>
+  <div class="card"><h3 style="font-size:20px;margin-bottom:8px">Core values</h3><p style="font-size:15px;color:#374151"><span class="ph">[Values supplied by KUCCCUL]</span></p></div>
+  <div class="card"><h3 style="font-size:20px;margin-bottom:8px">Governance and leadership</h3><p style="font-size:15px;color:#374151"><span class="ph">[Approved profiles supplied by KUCCCUL]</span></p></div>
+  <div class="card"><h3 style="font-size:20px;margin-bottom:8px">Registration</h3><p style="font-size:15px;color:#374151"><span class="ph">[Registration details supplied by KUCCCUL]</span></p></div>
+</div>
+</sc-if>
+
+<!-- PRODUCTS -->
+<sc-if value="{{p_products}}" hint-placeholder-val="{{false}}">
+<h1 style="font-size:40px;margin-bottom:24px">{{tx.productsH}}</h1>
+<div style="display:flex;flex-direction:column;gap:20px">
+  <sc-for list="{{categories}}" as="c" hint-placeholder-count="3">
+    <div class="card">
+      <h2 style="font-size:24px;margin-bottom:14px">{{c.title}}</h2>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px">
+        <sc-for list="{{c.items}}" as="it" hint-placeholder-count="4">
+          <div style="border:1px solid #DDE3EA;border-radius:8px;padding:14px"><div style="font-weight:600;color:#17365D">{{it}}</div><div style="font-size:13px;color:#6B4A3A;margin-top:6px"><span class="ph">[Benefits, eligibility and charges]</span></div></div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-for>
+</div>
+<div style="margin-top:24px;display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+  <sc-if value="{{isStd}}" hint-placeholder-val="{{true}}"><button class="btn" onClick="{{goLoan}}">Make a loan enquiry</button></sc-if>
+  <a class="btn2" href="#top">Call a branch</a>
+</div>
+</sc-if>
+
+<!-- BRANCHES -->
+<sc-if value="{{p_branches}}" hint-placeholder-val="{{false}}">
+<h1 style="font-size:40px;margin-bottom:24px">{{tx.branchesH}}</h1>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:24px;align-items:start">
+  <div>
+    <sc-if value="{{isFull}}" hint-placeholder-val="{{true}}">
+      <div class="card" style="margin-bottom:20px;background:#E8EEF6;border-color:#C9D6E6">
+        <h3 style="font-size:20px;margin-bottom:10px">Find your nearest office</h3>
+        <label class="lbl" for="loc">I am in</label>
+        <select id="loc" class="inp" value="{{branchIdx}}" onChange="{{setBranch}}">
+          <sc-for list="{{branchOptions}}" as="o" hint-placeholder-count="6"><option value="{{o.v}}">{{o.label}}</option></sc-for>
+        </select>
+        <p style="margin-top:12px;font-size:15px;color:#1F2933"><b>{{selName}}</b>, {{selPlace}}</p>
+      </div>
+    </sc-if>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <sc-for list="{{branchCards}}" as="b" hint-placeholder-count="6">
+        <div class="card" style="{{b.style}}">
+          <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap"><h3 style="font-size:19px">{{b.name}}</h3><span class="chip">{{b.place}}</span></div>
+          <p style="margin-top:8px;font-size:14px;color:#374151">{{b.addr}}</p>
+          <p style="margin-top:4px;font-size:14px;color:#374151">{{b.phone}} &nbsp;·&nbsp; <span class="ph">[Opening hours]</span></p>
+          <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn2" style="min-height:40px;font-size:14px;padding:0 14px" href="#top">Call</a><a class="btn2" style="min-height:40px;font-size:14px;padding:0 14px" href="#top">Directions</a></div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+  <div style="background:#DCE5EE;border:1px solid #C3D0DE;border-radius:12px;min-height:520px;position:relative;overflow:hidden;background-image:linear-gradient(#CBD8E5 1px,transparent 1px),linear-gradient(90deg,#CBD8E5 1px,transparent 1px);background-size:40px 40px">
+    <div style="position:absolute;left:16px;top:16px;background:#fff;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:600;color:#17365D">Map placeholder · Google Maps on the live site</div>
+    <sc-for list="{{pins}}" as="pn" hint-placeholder-count="6"><div style="{{pn.style}}"><span style="{{pn.dot}}"></span><span style="{{pn.tag}}">{{pn.name}}</span></div></sc-for>
+  </div>
+</div>
+<p style="margin-top:20px;font-size:14px;color:#4B5563">Each branch also gets its own Google Business listing, so members can find it on Google Search and Maps.</p>
+</sc-if>
+
+<!-- CONTACT / MEMBERSHIP / LOAN (shared layout) -->
+<sc-if value="{{p_twoCol}}" hint-placeholder-val="{{false}}">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:32px;align-items:start">
+  <div>
+    <sc-if value="{{p_contact}}" hint-placeholder-val="{{false}}">
+      <h1 style="font-size:40px;margin-bottom:20px">{{tx.contactH}}</h1>
+      <div class="card" style="display:flex;flex-direction:column;gap:14px">
+        <div><div class="lbl">Head office</div><p style="font-size:16px">Treasury Street, Kumba, 100 metres from Total, Buea Road</p></div>
+        <div><div class="lbl">P.O. Box</div><p style="font-size:16px">510, Kumba</p></div>
+        <div><div class="lbl">Telephone</div><p style="font-size:16px">+237 233 35 49 19 &nbsp;/&nbsp; +237 675 40 00 09</p></div>
+        <div><div class="lbl">Email</div><p style="font-size:16px"><span class="ph">[Official email address to be confirmed]</span></p></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;padding-top:6px"><a class="btn" href="#top">Call now</a><a class="btn2" href="#top">WhatsApp</a></div>
+      </div>
+    </sc-if>
+    <sc-if value="{{p_membership}}" hint-placeholder-val="{{false}}">
+      <h1 style="font-size:40px;margin-bottom:16px">Become a member</h1>
+      <p style="font-size:17px;line-height:1.6;color:#374151;margin-bottom:20px">Send your details and a member of staff will contact you about membership requirements, registration steps and share subscription.</p>
+      <div class="card"><h3 style="font-size:19px;margin-bottom:10px">What to expect</h3><div style="display:flex;flex-direction:column;gap:8px;font-size:15px;color:#374151"><div>1. Submit your details.</div><div>2. A staff member reviews and calls you.</div><div>3. You complete registration at your branch.</div></div></div>
+    </sc-if>
+    <sc-if value="{{p_loan}}" hint-placeholder-val="{{false}}">
+      <h1 style="font-size:40px;margin-bottom:16px">Loan enquiry</h1>
+      <p style="font-size:17px;line-height:1.6;color:#374151;margin-bottom:20px">Tell us what kind of loan you need. Submitting this form is a request for review and is never an automatic loan approval.</p>
+      <div class="card"><h3 style="font-size:19px;margin-bottom:10px">Loan categories</h3><div style="display:flex;flex-wrap:wrap;gap:8px"><span class="chip">General loans</span><span class="chip">School fee loans</span><span class="chip">Overdrafts</span><span class="chip">Njangui financing</span><span class="chip">Group financing</span></div></div>
+    </sc-if>
+  </div>
+
+  <div class="card" style="padding:28px">
+    <sc-if value="{{submitted}}" hint-placeholder-val="{{false}}">
+      <h2 style="font-size:26px;margin-bottom:10px">Request received</h2>
+      <p style="font-size:16px;line-height:1.55;color:#374151;margin-bottom:20px">Thank you. Your request has been sent to KUCCCUL staff for review. Open Staff login to see it appear in the dashboard.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" onClick="{{openAdmin}}">Open dashboard</button><button class="btn2" onClick="{{again}}">Send another</button></div>
+    </sc-if>
+    <sc-if value="{{formOpen}}" hint-placeholder-val="{{true}}">
+      <h2 style="font-size:24px;margin-bottom:18px">{{formTitle}}</h2>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div><label class="lbl" for="fn">Full name</label><input id="fn" class="inp" value="{{fName}}" onChange="{{setName}}"></div>
+        <div><label class="lbl" for="fp">Phone (+237 …)</label><input id="fp" class="inp" value="{{fPhone}}" onChange="{{setPhone}}" placeholder="+237 6 …"></div>
+        <div><label class="lbl" for="fb">Nearest branch</label><select id="fb" class="inp" value="{{fBranch}}" onChange="{{setFBranch}}"><sc-for list="{{formBranches}}" as="o" hint-placeholder-count="6"><option value="{{o.v}}">{{o.label}}</option></sc-for></select></div>
+        <sc-if value="{{p_loan}}" hint-placeholder-val="{{false}}"><div><label class="lbl" for="ft">Loan type</label><select id="ft" class="inp" value="{{fType}}" onChange="{{setType}}"><sc-for list="{{loanTypes}}" as="o" hint-placeholder-count="5"><option value="{{o.v}}">{{o.label}}</option></sc-for></select></div></sc-if>
+        <div><label class="lbl" for="fm">Message (optional)</label><textarea id="fm" class="inp" style="min-height:90px;padding:10px 12px" value="{{fMsg}}" onChange="{{setMsg}}"></textarea></div>
+        <label style="display:flex;gap:10px;align-items:flex-start;font-size:13px;line-height:1.5;color:#374151"><input type="checkbox" checked="{{fConsent}}" onChange="{{setConsent}}" style="width:20px;height:20px;margin-top:2px;flex:none"><span>I have read the privacy notice and consent to KUCCCUL using my details to respond to this request, in line with Cameroon's data protection law (Law No. 2024/017).</span></label>
+        <div><button class="btn" disabled="{{formInvalid}}" onClick="{{submitForm}}">Send request</button></div>
+      </div>
+    </sc-if>
+  </div>
+</div>
+</sc-if>
+
+<!-- NEWS -->
+<sc-if value="{{p_news}}" hint-placeholder-val="{{false}}">
+<h1 style="font-size:40px;margin-bottom:24px">News and announcements</h1>
+<div style="display:flex;flex-direction:column;gap:16px;max-width:820px">
+  <sc-for list="{{news}}" as="nw" hint-placeholder-count="3">
+    <div class="card"><div style="font-size:13px;color:#4B5563;margin-bottom:6px">{{nw.date}}</div><h2 style="font-size:22px;margin-bottom:8px">{{nw.title}}</h2><p style="font-size:15px;line-height:1.55;color:#374151">{{nw.body}}</p></div>
+  </sc-for>
+</div>
+</sc-if>
+
+<!-- FAQ -->
+<sc-if value="{{p_faq}}" hint-placeholder-val="{{false}}">
+<h1 style="font-size:40px;margin-bottom:24px">Frequently asked questions</h1>
+<div style="display:flex;flex-direction:column;gap:12px;max-width:820px">
+  <sc-for list="{{faq}}" as="q" hint-placeholder-count="4">
+    <div class="card" style="padding:0">
+      <button style="width:100%;text-align:left;background:transparent;border:0;padding:18px 24px;font-size:17px;font-weight:600;color:#17365D;min-height:44px;display:flex;justify-content:space-between;gap:12px" aria-expanded="{{q.open}}" onClick="{{q.toggle}}"><span>{{q.q}}</span><span aria-hidden="true">{{q.sign}}</span></button>
+      <sc-if value="{{q.open}}" hint-placeholder-val="{{false}}"><p style="padding:0 24px 20px;font-size:15px;line-height:1.55;color:#374151"><span class="ph">[Answer supplied by KUCCCUL]</span></p></sc-if>
+    </div>
+  </sc-for>
+</div>
+</sc-if>
+
+<!-- DOCUMENTS -->
+<sc-if value="{{p_documents}}" hint-placeholder-val="{{false}}">
+<h1 style="font-size:40px;margin-bottom:24px">Document centre</h1>
+<div style="display:flex;flex-direction:column;gap:12px;max-width:820px">
+  <sc-for list="{{docs}}" as="d" hint-placeholder-count="3">
+    <div class="card" style="display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap"><div><div style="font-weight:600;color:#17365D;font-size:17px">{{d.name}}</div><div style="font-size:13px;color:#4B5563;margin-top:2px">{{d.type}}</div></div><a class="btn2" href="#top">Download</a></div>
+  </sc-for>
+</div>
+</sc-if>
+
+<!-- CALCULATORS -->
+<sc-if value="{{p_calculators}}" hint-placeholder-val="{{false}}">
+<h1 style="font-size:40px;margin-bottom:8px">Calculators</h1>
+<p style="font-size:15px;color:#4B5563;margin-bottom:24px;max-width:700px">Indicative estimates only. Rates shown are illustrative until KUCCCUL supplies its approved rates and terms.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:24px">
+  <div class="card">
+    <h2 style="font-size:24px;margin-bottom:18px">Loan repayment</h2>
+    <label class="lbl" for="la">Loan amount: {{loanAmtText}}</label>
+    <input id="la" type="range" min="50000" max="5000000" step="50000" value="{{loanAmt}}" onChange="{{setLoanAmt}}" style="width:100%">
+    <label class="lbl" for="lr" style="margin-top:16px">Yearly rate: {{loanRate}}%</label>
+    <input id="lr" type="range" min="1" max="30" step="1" value="{{loanRate}}" onChange="{{setLoanRate}}" style="width:100%">
+    <label class="lbl" for="lm" style="margin-top:16px">Term: {{loanMonths}} months</label>
+    <input id="lm" type="range" min="3" max="60" step="1" value="{{loanMonths}}" onChange="{{setLoanMonths}}" style="width:100%">
+    <div style="margin-top:20px;background:#E8EEF6;border-radius:10px;padding:16px"><div style="font-size:13px;color:#374151">Estimated monthly repayment</div><div style="font-family:'Source Serif 4',serif;font-size:32px;font-weight:700;color:#17365D">{{loanPay}}</div></div>
+  </div>
+  <div class="card">
+    <h2 style="font-size:24px;margin-bottom:18px">Savings growth</h2>
+    <label class="lbl" for="sm">Monthly saving: {{savMonthlyText}}</label>
+    <input id="sm" type="range" min="5000" max="500000" step="5000" value="{{savMonthly}}" onChange="{{setSavMonthly}}" style="width:100%">
+    <label class="lbl" for="sr" style="margin-top:16px">Yearly rate: {{savRate}}%</label>
+    <input id="sr" type="range" min="0" max="15" step="1" value="{{savRate}}" onChange="{{setSavRate}}" style="width:100%">
+    <label class="lbl" for="sy" style="margin-top:16px">Period: {{savYears}} years</label>
+    <input id="sy" type="range" min="1" max="20" step="1" value="{{savYears}}" onChange="{{setSavYears}}" style="width:100%">
+    <div style="margin-top:20px;background:#E8EEF6;border-radius:10px;padding:16px"><div style="font-size:13px;color:#374151">Estimated balance at the end</div><div style="font-family:'Source Serif 4',serif;font-size:32px;font-weight:700;color:#17365D">{{savTotal}}</div></div>
+  </div>
+</div>
+</sc-if>
+
+</main>
+
+<footer style="background:#0F2440;color:#D5DEE9;padding:32px 24px">
+  <div style="max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:16px 48px;justify-content:space-between;font-size:14px;line-height:1.6">
+    <div><div style="font-family:'Source Serif 4',serif;font-size:20px;font-weight:700;color:#fff">KUCCCUL</div><div>Kumba Central Cooperative Credit Union Limited</div></div>
+    <div>Treasury Street, Kumba · P.O. Box 510<br>+237 233 35 49 19 / +237 675 40 00 09</div>
+  </div>
+</footer>
+
+</sc-if>
+</div>
+</x-dc>
+
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1700}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      pkg: 'standard', page: 'home', lang: 'en', admin: false,
+      branchIdx: 0, submitted: false, subscribed: false, openFaq: -1,
+      fName: '', fPhone: '', fBranch: 'Kumba', fType: 'General loan', fMsg: '', fConsent: false,
+      loanAmt: 500000, loanRate: 12, loanMonths: 12,
+      savMonthly: 20000, savRate: 5, savYears: 5,
+      newsTitle: '', newsBody: '', newsDone: false,
+      news: [
+        { title: 'Annual General Meeting notice', date: '[Date]', body: 'Notice of the Annual General Meeting will be published here by authorised staff.' },
+        { title: 'New product announcement', date: '[Date]', body: 'Announcements of new products and membership campaigns appear here.' }
+      ],
+      enquiries: [
+        { type: 'Membership', name: 'Sample enquiry', phone: '+237 6 00 00 00 00', branch: 'Kumba', status: 'New' },
+        { type: 'Loan', name: 'Sample enquiry', phone: '+237 6 00 00 00 01', branch: 'Bekondo', status: 'Reviewed' }
+      ]
+    };
+  }
+
+  renderVals() {
+    const s = this.state;
+    const set = (o) => this.setState(o);
+    const fmt = (n) => Math.round(n).toLocaleString('en-US') + ' XAF';
+    const pkgs = {
+      starter: { name: 'Starter', price: 'XAF 200,000', blurb: '5–6 page site, WhatsApp, click-to-call, map and Google Business listings. No dashboard, forms or calculators.' },
+      standard: { name: 'Standard', price: 'XAF 400,000 – 450,000', blurb: 'Starter plus admin dashboard, membership and loan enquiry forms, document centre and FAQ.' },
+      full: { name: 'Full', price: 'XAF 700,000', blurb: 'Everything: adds calculators, branch locator, newsletter and French key pages.' }
+    };
+    const isStd = s.pkg !== 'starter';
+    const isFull = s.pkg === 'full';
+    const fr = isFull && s.lang === 'fr';
+
+    const pickPkg = (k) => () => {
+      const std = k !== 'starter', full = k === 'full';
+      let page = s.page;
+      const ok = ['home', 'about', 'products', 'branches', 'contact'];
+      if (std) ok.push('membership', 'loan', 'news', 'faq', 'documents');
+      if (full) ok.push('calculators');
+      if (ok.indexOf(page) < 0) page = 'home';
+      set({ pkg: k, page: page, admin: std ? s.admin : false, lang: full ? s.lang : 'en', submitted: false });
+    };
+    const pkgBtns = ['starter', 'standard', 'full'].map((k) => ({
+      label: pkgs[k].name,
+      pick: pickPkg(k),
+      style: s.pkg === k
+        ? 'min-height:40px;padding:0 18px;border-radius:8px;border:2px solid #F2B79A;background:#F2B79A;color:#0F2440;font-weight:700;font-size:14px'
+        : 'min-height:40px;padding:0 18px;border-radius:8px;border:2px solid #5B7596;background:transparent;color:#fff;font-weight:600;font-size:14px'
+    }));
+
+    const labels = fr
+      ? { home: 'Accueil', about: 'À propos', products: 'Produits et services', branches: 'Agences', contact: 'Contact', membership: 'Adhésion', loan: 'Demande de prêt', news: 'Actualités', faq: 'FAQ', documents: 'Documents', calculators: 'Calculateurs' }
+      : { home: 'Home', about: 'About us', products: 'Products & services', branches: 'Branches', contact: 'Contact', membership: 'Membership', loan: 'Loan enquiry', news: 'News', faq: 'FAQ', documents: 'Documents', calculators: 'Calculators' };
+    const order = ['home', 'about', 'products', 'branches', 'contact'];
+    if (isStd) order.splice(4, 0, 'membership', 'loan', 'news', 'faq', 'documents');
+    if (isFull) order.splice(order.length - 1, 0, 'calculators');
+    const nav = order.map((k) => ({
+      label: labels[k],
+      go: () => set({ page: k, admin: false, submitted: false }),
+      style: s.page === k ? 'border-bottom-color:#C05A2B;color:#17365D;font-weight:700' : ''
+    }));
+
+    const tx = fr ? {
+      heroTitle: 'Votre partenaire financier de confiance. Construisons ensemble un meilleur avenir financier.',
+      heroSub: 'Coopérative d’épargne et de crédit au service de ses membres, à Kumba et dans les communautés environnantes, depuis 1996.',
+      ctaMember: 'Devenir membre', ctaCall: 'Nous appeler', since: 'DEPUIS 1996', heroCard: 'Six points de service pour être proche de vous.',
+      secServices: 'Nos produits et services', secNews: 'Annonces', productsH: 'Produits et services', branchesH: 'Nos agences', contactH: 'Contactez-nous',
+      newsletter: 'Restez informé', newsletterSub: 'Recevez les annonces et avis de la coopérative.', subscribe: 'S’abonner'
+    } : {
+      heroTitle: 'Your Trusted Financial Partner. Building Better Financial Futures Together.',
+      heroSub: 'A savings and loans cooperative serving members in Kumba and surrounding communities since 1996.',
+      ctaMember: 'Become a member', ctaCall: 'Call us', since: 'SINCE 1996', heroCard: 'Six offices to keep banking close to you.',
+      secServices: 'Products and services', secNews: 'Announcements', productsH: 'Products and services', branchesH: 'Our branches', contactH: 'Contact us',
+      newsletter: 'Stay informed', newsletterSub: 'Get announcements and notices from the cooperative.', subscribe: 'Subscribe'
+    };
+
+    const categories = [
+      { title: fr ? 'Épargne' : 'Savings', items: ['Shares Account', 'Deposit Account', 'Savings Account', 'Daily Savings', 'Minor’s Account', 'Group Account', 'Preference Shares'] },
+      { title: fr ? 'Prêts' : 'Loans', items: ['General Loan Facilities', 'School Fee Loans', 'Overdrafts', 'Njangui Financing', 'Group Financing', 'Special Credit Facilities'] },
+      { title: fr ? 'Autres services' : 'Other services', items: ['Mobile Money', 'Telecash', 'Insurance', 'Payment of Salaries', 'Standing Orders'] }
+    ];
+
+    const branches = [
+      { name: 'Head Office', place: 'Kumba', addr: 'Treasury Street, 100 m from Total, Buea Road', phone: '+237 233 35 49 19', x: 52, y: 44 },
+      { name: 'Branch Office', place: 'Douala – Bonaberi', addr: '[Address to be supplied]', phone: '[Phone]', x: 70, y: 78 },
+      { name: 'Subdivision Office', place: 'Ngusi, Ebonji-Tombel', addr: '[Address to be supplied]', phone: '[Phone]', x: 30, y: 62 },
+      { name: 'Branch', place: 'Bekondo', addr: '[Address to be supplied]', phone: '[Phone]', x: 24, y: 28 },
+      { name: 'Branch', place: 'New Town Barombi', addr: '[Address to be supplied]', phone: '[Phone]', x: 62, y: 20 },
+      { name: 'Branch', place: 'Bova Bomboko', addr: '[Address to be supplied]', phone: '[Phone]', x: 80, y: 38 }
+    ];
+    const sel = branches[s.branchIdx] || branches[0];
+    const branchCards = branches.map((b, i) => ({
+      name: b.name, place: b.place, addr: b.addr, phone: b.phone,
+      style: (isFull && i === s.branchIdx) ? 'border:2px solid #C05A2B' : ''
+    }));
+    const pins = branches.map((b, i) => {
+      const on = isFull && i === s.branchIdx;
+      return {
+        name: b.place,
+        style: 'position:absolute;left:' + b.x + '%;top:' + b.y + '%;display:flex;align-items:center;gap:6px',
+        dot: 'width:16px;height:16px;border-radius:50%;background:' + (on ? '#C05A2B' : '#17365D') + ';border:3px solid #fff;flex:none',
+        tag: 'font-size:12px;font-weight:600;background:#fff;border-radius:6px;padding:3px 8px;color:#17365D'
+      };
+    });
+    const branchOptions = branches.map((b, i) => ({ v: String(i), label: b.place }));
+    const formBranches = branches.map((b) => ({ v: b.place.split(' – ')[0].split(',')[0], label: b.place }));
+    const loanTypes = ['General loan', 'School fee loan', 'Overdraft', 'Njangui financing', 'Group financing'].map((x) => ({ v: x, label: x }));
+
+    const p = s.page;
+    const twoCol = p === 'contact' || p === 'membership' || p === 'loan';
+    const isContactForm = p === 'contact';
+    const kind = p === 'membership' ? 'Membership' : p === 'loan' ? 'Loan' : 'Contact';
+    const formInvalid = !(s.fName.trim().length > 1 && s.fPhone.trim().length > 6 && s.fConsent);
+
+    const submitForm = () => {
+      const e = { type: kind, name: s.fName.trim(), phone: s.fPhone.trim(), branch: s.fBranch, status: 'New' };
+      set({ enquiries: [e].concat(s.enquiries), submitted: true, fName: '', fPhone: '', fMsg: '', fConsent: false });
+    };
+
+    const enquiries = s.enquiries.map((e, i) => ({
+      type: e.type, name: e.name, phone: e.phone, branch: e.branch, status: e.status,
+      action: e.status === 'New' ? 'Mark reviewed' : 'Reopen',
+      badge: e.status === 'New'
+        ? 'display:inline-block;padding:4px 10px;border-radius:999px;background:#FBEFE6;color:#8A3B17;font-weight:600;font-size:13px'
+        : 'display:inline-block;padding:4px 10px;border-radius:999px;background:#E3F2E9;color:#1B5E3A;font-weight:600;font-size:13px',
+      toggle: () => set({ enquiries: s.enquiries.map((x, j) => j === i ? Object.assign({}, x, { status: x.status === 'New' ? 'Reviewed' : 'New' }) : x) })
+    }));
+
+    const faqQs = ['Who can become a member?', 'How do I apply for a loan?', 'What documents do I need to open an account?', 'Where are your branches?'];
+    const faq = faqQs.map((q, i) => ({
+      q: q, open: s.openFaq === i, sign: s.openFaq === i ? '–' : '+',
+      toggle: () => set({ openFaq: s.openFaq === i ? -1 : i })
+    }));
+
+    const docs = [
+      { name: 'Membership application form', type: 'PDF · [supplied by KUCCCUL]' },
+      { name: 'Loan application form', type: 'PDF · [supplied by KUCCCUL]' },
+      { name: 'Annual General Meeting notice', type: 'PDF · [supplied by KUCCCUL]' }
+    ];
+
+    const r = s.loanRate / 1200, n = s.loanMonths;
+    const loanPay = r === 0 ? s.loanAmt / n : (s.loanAmt * r) / (1 - Math.pow(1 + r, -n));
+    const sr = s.savRate / 1200, sn = s.savYears * 12;
+    const savTotal = sr === 0 ? s.savMonthly * sn : s.savMonthly * ((Math.pow(1 + sr, sn) - 1) / sr);
+
+    const langBtn = (on) => on
+      ? 'min-height:32px;padding:0 10px;border-radius:6px;border:2px solid #17365D;background:#17365D;color:#fff;font-weight:700;font-size:13px'
+      : 'min-height:32px;padding:0 10px;border-radius:6px;border:2px solid #9AA5B1;background:#fff;color:#17365D;font-weight:600;font-size:13px';
+
+    const newsAll = s.news;
+    return {
+      pkgBtns: pkgBtns, pkgPrice: pkgs[s.pkg].price, pkgBlurb: pkgs[s.pkg].blurb,
+      isStd: isStd, isFull: isFull, showSite: !s.admin, nav: nav, tx: tx,
+      p_admin: s.admin, p_home: p === 'home', p_about: p === 'about', p_products: p === 'products', p_branches: p === 'branches',
+      p_contact: p === 'contact', p_membership: p === 'membership', p_loan: p === 'loan', p_news: p === 'news', p_faq: p === 'faq',
+      p_documents: p === 'documents', p_calculators: p === 'calculators', p_twoCol: twoCol,
+      ctaCallClass: isStd ? 'btn2' : 'btn',
+      openAdmin: () => set({ admin: true }),
+      backToSite: () => set({ admin: false, page: 'home' }),
+      goMembership: () => set({ page: 'membership', submitted: false }),
+      goLoan: () => set({ page: 'loan', submitted: false }),
+      enStyle: langBtn(!fr), frStyle: langBtn(fr),
+      setEn: () => set({ lang: 'en' }), setFr: () => set({ lang: 'fr' }),
+      places: branches, categories: categories, newsTop: newsAll.slice(0, 2), news: newsAll,
+      subscribe: () => set({ subscribed: true }), subscribed: s.subscribed,
+      branchCards: branchCards, pins: pins, branchOptions: branchOptions, branchIdx: String(s.branchIdx),
+      setBranch: (e) => set({ branchIdx: Number(e.target.value) }),
+      selName: sel.name, selPlace: sel.place,
+      submitted: s.submitted, formOpen: !s.submitted,
+      formTitle: kind === 'Membership' ? 'Membership enquiry' : kind === 'Loan' ? 'Loan enquiry form' : 'Send us a message',
+      fName: s.fName, fPhone: s.fPhone, fBranch: s.fBranch, fType: s.fType, fMsg: s.fMsg, fConsent: s.fConsent,
+      setName: (e) => set({ fName: e.target.value }), setPhone: (e) => set({ fPhone: e.target.value }),
+      setFBranch: (e) => set({ fBranch: e.target.value }), setType: (e) => set({ fType: e.target.value }),
+      setMsg: (e) => set({ fMsg: e.target.value }), setConsent: (e) => set({ fConsent: e.target.checked }),
+      formBranches: formBranches, loanTypes: loanTypes, formInvalid: formInvalid, submitForm: submitForm,
+      again: () => set({ submitted: false }),
+      faq: faq, docs: docs,
+      loanAmt: s.loanAmt, loanRate: s.loanRate, loanMonths: s.loanMonths, loanAmtText: fmt(s.loanAmt), loanPay: fmt(loanPay),
+      setLoanAmt: (e) => set({ loanAmt: Number(e.target.value) }), setLoanRate: (e) => set({ loanRate: Number(e.target.value) }), setLoanMonths: (e) => set({ loanMonths: Number(e.target.value) }),
+      savMonthly: s.savMonthly, savRate: s.savRate, savYears: s.savYears, savMonthlyText: fmt(s.savMonthly), savTotal: fmt(savTotal),
+      setSavMonthly: (e) => set({ savMonthly: Number(e.target.value) }), setSavRate: (e) => set({ savRate: Number(e.target.value) }), setSavYears: (e) => set({ savYears: Number(e.target.value) }),
+      enquiries: enquiries, newCount: s.enquiries.filter((x) => x.status === 'New').length, enqCount: s.enquiries.length, newsCount: s.news.length,
+      newsTitle: s.newsTitle, newsBody: s.newsBody, newsDone: s.newsDone,
+      newsInvalid: s.newsTitle.trim().length < 2,
+      setNewsTitle: (e) => set({ newsTitle: e.target.value, newsDone: false }), setNewsBody: (e) => set({ newsBody: e.target.value, newsDone: false }),
+      publishNews: () => set({ news: [{ title: s.newsTitle.trim(), date: 'Just now', body: s.newsBody.trim() || ' ' }].concat(s.news), newsTitle: '', newsBody: '', newsDone: true })
+    };
+  }
+}
+</script>
+</body>
+</html>
